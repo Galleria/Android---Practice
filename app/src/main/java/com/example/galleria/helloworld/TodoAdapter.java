@@ -1,19 +1,20 @@
-package com.example.dt204842.helloworld;
+package com.example.galleria.helloworld;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.dt204842.helloworld.model.TodoModel;
+import com.example.galleria.helloworld.model.TodoModel;
 
 import java.util.List;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
     private static final String TAG = "TodoAdapter";
     private List<TodoModel> todoList;
+
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView title;

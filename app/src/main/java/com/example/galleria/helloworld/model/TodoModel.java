@@ -1,4 +1,4 @@
-package com.example.dt204842.helloworld.model;
+package com.example.galleria.helloworld.model;
 
 /**
  * Created by dt204842 on 11/24/2016.

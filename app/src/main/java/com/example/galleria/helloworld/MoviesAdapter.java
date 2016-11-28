@@ -1,4 +1,4 @@
-package com.example.dt204842.helloworld;
+package com.example.galleria.helloworld;
 
 /**
  * Created by dt204842 on 11/24/2016.
@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.dt204842.helloworld.model.Movie;
+import com.example.galleria.helloworld.model.Movie;
 
 import java.util.List;
 

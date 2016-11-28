@@ -1,9 +1,13 @@
-package com.example.dt204842.helloworld;
+package com.example.galleria.helloworld;
 
 import android.content.DialogInterface;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,18 +15,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.dt204842.helloworld.model.Movie;
-import com.example.dt204842.helloworld.model.TodoModel;
+import com.example.galleria.helloworld.model.TodoModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements BlankFragment.OnFragmentInteractionListener , BlankFragment2.OnFragmentInteractionListener {
 
     private static final String TAG = "MainActivity";
 
@@ -35,14 +36,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        todoRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        todoAdapter = new TodoAdapter(todoList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        todoRecyclerView.setLayoutManager(mLayoutManager);
-        todoRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        todoRecyclerView.setAdapter(todoAdapter);
-        prepareTodoData();
+        //Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
+        //myFragment = (BlankFragment) fragment;
 
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.layout_fragment_container, BlankFragment.newInstance());
+        ft.commit();
+
+        setUpBottomNavigationBar();
+
+        prepareTodoData();
+        updateUI();
     }
 
     @Override
@@ -62,6 +66,49 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    TextView textView;
+    FragmentTransaction ft;
+
+    public void setUpBottomNavigationBar(){
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        textView = (TextView) findViewById(R.id.textView);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                        // must get fragment everytime that calling menu
+                        ft = getSupportFragmentManager().beginTransaction();
+
+
+                        switch (item.getItemId()) {
+                            case R.id.action_favorites:
+                                textView.setText("Favorites Selected");
+                                ft.replace(R.id.layout_fragment_container, new BlankFragment());
+                                //ft.commit();
+                                break;
+                            case R.id.action_schedules:
+                                textView.setText("Schedules Selected");
+                                ft.replace(R.id.layout_fragment_container, new BlankFragment2());
+                                //ft.commit();
+                                break;
+                            case R.id.action_music:
+                                textView.setText("Music Selected");
+                                ft.replace(R.id.layout_fragment_container, new BlankFragment());
+                                //ft.commit();
+                                break;
+                        }
+
+                        ft.addToBackStack(null);
+                        ft.commit();
+
+                        return false;
+                    }
+                });
     }
 
     private void addTodoList(){
@@ -88,10 +135,10 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-/*
+
     private void updateUI() {
 
-        todoRecyclerView = (RecyclerView) findViewById(R.id.list_todo);
+        todoRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         todoAdapter = new TodoAdapter(todoList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         todoRecyclerView.setLayoutManager(mLayoutManager);
@@ -101,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         todoAdapter.notifyDataSetChanged();
 
     }
-*/
+
 
     public void deleteTask(View view) {
         View parent = (View) view.getParent();
@@ -128,7 +175,21 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "prepareTodoData: " + todoList.size() );
 
-        todoAdapter.notifyDataSetChanged();
+        //todoAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onBlankFragment2Interaction(String string) {
+
+    }
+
+    @Override
+    public void onBlankFragmentInteraction(String string) {
+
+    }
 }

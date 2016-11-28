@@ -1,4 +1,4 @@
-package com.example.dt204842.helloworld;
+package com.example.galleria.helloworld;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

@@ -1,4 +1,4 @@
-package com.example.dt204842.helloworld;
+package com.example.galleria.helloworld;
 
 import org.junit.Test;
 
