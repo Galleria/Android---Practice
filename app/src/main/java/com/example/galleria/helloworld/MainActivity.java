@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
         //myFragment = (BlankFragment) fragment;
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.layout_fragment_container, BlankFragment.newInstance());
+        ft.add(R.id.layout_fragment_container, BlankFragment.newInstance());
         ft.commit();
 
         setUpBottomNavigationBar();
@@ -70,9 +70,10 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
 
     TextView textView;
     FragmentTransaction ft;
+    BottomNavigationView bottomNavigationView;
 
     public void setUpBottomNavigationBar(){
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         textView = (TextView) findViewById(R.id.textView);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
@@ -81,34 +82,40 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                        // must get fragment everytime that calling menu
+                        // must get fragment every time that calling menu
+                        // 1 transaction per 1 commit
                         ft = getSupportFragmentManager().beginTransaction();
 
 
                         switch (item.getItemId()) {
                             case R.id.action_favorites:
+
                                 textView.setText("Favorites Selected");
                                 ft.replace(R.id.layout_fragment_container, new BlankFragment());
-                                //ft.commit();
+
                                 break;
                             case R.id.action_schedules:
+
                                 textView.setText("Schedules Selected");
                                 ft.replace(R.id.layout_fragment_container, new BlankFragment2());
-                                //ft.commit();
+
                                 break;
                             case R.id.action_music:
+
                                 textView.setText("Music Selected");
                                 ft.replace(R.id.layout_fragment_container, new BlankFragment());
-                                //ft.commit();
+
                                 break;
                         }
 
-                        ft.addToBackStack(null);
+                        //ft.addToBackStack(null);
                         ft.commit();
 
-                        return false;
+                        return true;
                     }
-                });
+                }
+        );
+        //bottomNavigationView.setItemBackgroundResource(R.color.colorAccent);
     }
 
     private void addTodoList(){
