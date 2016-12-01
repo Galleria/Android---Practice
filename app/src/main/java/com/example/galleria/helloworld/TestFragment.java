@@ -4,23 +4,32 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import com.google.android.gms.maps.SupportMapFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link BlankFragment2.OnFragmentInteractionListener} interface
+ * {@link TestFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link BlankFragment2#newInstance} factory method to
+ * Use the {@link TestFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BlankFragment2 extends Fragment {
+public class TestFragment extends Fragment implements OnMapReadyCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    private View mContentView;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -28,12 +37,12 @@ public class BlankFragment2 extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public BlankFragment2() {
+    public TestFragment() {
         // Required empty public constructor
     }
 
-    public static BlankFragment2 newInstance() {
-        BlankFragment2 fragment = new BlankFragment2();
+    public static TestFragment newInstance() {
+        TestFragment fragment = new TestFragment();
         return fragment;
     }
 
@@ -43,11 +52,11 @@ public class BlankFragment2 extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment BlankFragment2.
+     * @return A new instance of fragment BlankFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static BlankFragment2 newInstance(String param1, String param2) {
-        BlankFragment2 fragment = new BlankFragment2();
+    public static TestFragment newInstance(String param1, String param2) {
+        TestFragment fragment = new TestFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -62,24 +71,51 @@ public class BlankFragment2 extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_blank_fragment2, container, false);
+
+     /*
+        FragmentManager fm = getFragmentManager();
+        if( fm != null ) {
+
+            for (Fragment f : fm.getFragments()) {
+                System.out.println("f.getId() : " + f.getId());
+            }
+
+            Fragment fragment = (fm.findFragmentById(R.id.fragment));
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.remove(fragment);
+            ft.commit();
+        }
+        else{
+            System.out.println("fm is null");
+        }
+    */
+        if (mContentView == null) {
+            mContentView = inflater.inflate(R.layout.test_layout, container, false);
+        }
+        return mContentView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+    FragmentTransaction ft;
 
     @Override
     public void onAttach(Context context) {
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+
+        //FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.remove(mapFragment);
+        ft.commit();
+
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
@@ -91,8 +127,27 @@ public class BlankFragment2 extends Fragment {
 
     @Override
     public void onDetach() {
+/*
+        FragmentManager fm = getFragmentManager();
+        Fragment fragment = (fm.findFragmentById(R.id.fragment));
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.remove(fragment);
+        ft.commit();
+*/
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+    }
+
+    @Override
+    public void onDestroyView() {
+
+
+        super.onDestroyView();
     }
 
     /**
@@ -108,6 +163,5 @@ public class BlankFragment2 extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-        public void onBlankFragmentInteraction(String string);
     }
 }
