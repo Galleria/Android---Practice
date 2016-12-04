@@ -1,35 +1,35 @@
 package com.example.galleria.helloworld;
 
+import android.app.ActionBar;
+import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import com.google.android.gms.maps.SupportMapFragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.github.ksoichiro.android.observablescrollview.ObservableListView;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
+import com.github.ksoichiro.android.observablescrollview.ScrollState;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TestFragment.OnFragmentInteractionListener} interface
+ * {@link SocialFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link TestFragment#newInstance} factory method to
+ * Use the {@link SocialFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TestFragment extends Fragment implements OnMapReadyCallback {
+public class SocialFragment extends Fragment implements ObservableScrollViewCallbacks {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    private View mContentView;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -37,12 +37,12 @@ public class TestFragment extends Fragment implements OnMapReadyCallback {
 
     private OnFragmentInteractionListener mListener;
 
-    public TestFragment() {
+    public SocialFragment() {
         // Required empty public constructor
     }
 
-    public static TestFragment newInstance() {
-        TestFragment fragment = new TestFragment();
+    public static SocialFragment newInstance() {
+        SocialFragment fragment = new SocialFragment();
         return fragment;
     }
 
@@ -55,8 +55,8 @@ public class TestFragment extends Fragment implements OnMapReadyCallback {
      * @return A new instance of fragment BlankFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TestFragment newInstance(String param1, String param2) {
-        TestFragment fragment = new TestFragment();
+    public static SocialFragment newInstance(String param1, String param2) {
+        SocialFragment fragment = new SocialFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -71,51 +71,40 @@ public class TestFragment extends Fragment implements OnMapReadyCallback {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.social, container, false);
+        ObservableListView listView = (ObservableListView) rootView.findViewById(R.id.list);
+        listView.setScrollViewCallbacks(this);
 
-     /*
-        FragmentManager fm = getFragmentManager();
-        if( fm != null ) {
 
-            for (Fragment f : fm.getFragments()) {
-                System.out.println("f.getId() : " + f.getId());
-            }
+        ListView li = (ListView) rootView.findViewById(R.id.listView);
 
-            Fragment fragment = (fm.findFragmentById(R.id.fragment));
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.remove(fragment);
-            ft.commit();
-        }
-        else{
-            System.out.println("fm is null");
-        }
-    */
-        if (mContentView == null) {
-            mContentView = inflater.inflate(R.layout.test_layout, container, false);
-        }
-        return mContentView;
+        ViewGroup.LayoutParams lparams = new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        TextView tv=new TextView(rootView.getContext());
+        tv.setLayoutParams(lparams);
+        tv.setText("test");
+
+        li.addView(tv);
+
+        return inflater.inflate(R.layout.social, container, false);
     }
 
-    FragmentTransaction ft;
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
+    }
 
     @Override
     public void onAttach(Context context) {
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-
-        //FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.remove(mapFragment);
-        ft.commit();
-
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
@@ -127,27 +116,32 @@ public class TestFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onDetach() {
-/*
-        FragmentManager fm = getFragmentManager();
-        Fragment fragment = (fm.findFragmentById(R.id.fragment));
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.remove(fragment);
-        ft.commit();
-*/
         super.onDetach();
         mListener = null;
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
 
     }
 
     @Override
-    public void onDestroyView() {
+    public void onDownMotionEvent() {
 
+    }
 
-        super.onDestroyView();
+    @Override
+    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
+        ActionBar ab = getActivity().getActionBar();
+        if (scrollState == ScrollState.UP) {
+            if (ab.isShowing()) {
+                ab.hide();
+            }
+        } else if (scrollState == ScrollState.DOWN) {
+            if (!ab.isShowing()) {
+                ab.show();
+            }
+        }
     }
 
     /**

@@ -1,11 +1,11 @@
 package com.example.galleria.helloworld;
 
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -18,12 +18,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
 import com.example.galleria.helloworld.model.TodoModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements BlankFragment.OnFragmentInteractionListener , BlankFragment2.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements BlankFragment.OnFragmentInteractionListener , BlankFragment2.OnFragmentInteractionListener, SocialFragment.OnFragmentInteractionListener {
 
     private static final String TAG = "MainActivity";
 
@@ -38,15 +40,23 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
 
         //Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
         //myFragment = (BlankFragment) fragment;
-
+/*
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.layout_fragment_container, BlankFragment.newInstance());
         ft.commit();
+*/
+        AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
+        bottomNavigation.setBehaviorTranslationEnabled(false);
+        bottomNavigation.setForceTint(false);
+        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_HIDE);
+        AHBottomNavigationAdapter navigationAdapter = new AHBottomNavigationAdapter(this, R.menu.bottom_navigation_main);
+        navigationAdapter.setupWithBottomNavigation(bottomNavigation);
 
         setUpBottomNavigationBar();
 
-        prepareTodoData();
-        updateUI();
+        bottomNavigation.setCurrentItem(0);
+        //prepareTodoData();
+        //updateUI();
     }
 
     @Override
@@ -70,13 +80,37 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
 
     TextView textView;
     FragmentTransaction ft;
-    BottomNavigationView bottomNavigationView;
+    AHBottomNavigation bottomNavigationView;
 
     public void setUpBottomNavigationBar(){
-        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-        textView = (TextView) findViewById(R.id.textView);
+        bottomNavigationView = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+          @Override
+          public boolean onTabSelected(int position, boolean wasSelected) {
+              //ft = getSupportFragmentManager().beginTransaction();
+              ft = getFragmentManager().beginTransaction();
 
+              switch (position) {
+                  case 0:
+                      ft.replace(R.id.fragment, com.google.android.gms.maps.MapFragment.newInstance() );
+                      break;
+                  case 1:
+                      ft.replace(R.id.fragment, BlankFragment2.newInstance());
+                      break;
+                  case 2:
+                      ft.replace(R.id.fragment, SocialFragment.newInstance());
+                      break;
+                  case 3:
+                      ft.replace(R.id.fragment, new BlankFragment());
+                      break;
+              }
+              ft.commit();
+              return true;
+          }
+        });
+/*
         bottomNavigationView.setOnNavigationItemSelectedListener(
+
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
 
                     @Override
@@ -90,20 +124,26 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
                         switch (item.getItemId()) {
                             case R.id.action_favorites:
 
-                                textView.setText("Favorites Selected");
-                                ft.replace(R.id.layout_fragment_container, new BlankFragment());
+                                //textView.setText("Favorites Selected");
+                                ft.replace(R.id.fragment, BlankFragment.newInstance());
 
                                 break;
                             case R.id.action_schedules:
 
-                                textView.setText("Schedules Selected");
-                                ft.replace(R.id.layout_fragment_container, new BlankFragment2());
+                                //textView.setText("Schedules Selected");
+                                ft.replace(R.id.fragment, BlankFragment2.newInstance());
 
                                 break;
                             case R.id.action_music:
 
-                                textView.setText("Music Selected");
-                                ft.replace(R.id.layout_fragment_container, new BlankFragment());
+                                //textView.setText("Music Selected");
+                                ft.replace(R.id.fragment, new BlankFragment());
+
+                                break;
+                            case R.id.action_notification:
+
+                                //textView.setText("Music Selected");
+                                ft.replace(R.id.fragment, new BlankFragment());
 
                                 break;
                         }
@@ -114,7 +154,9 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
                         return true;
                     }
                 }
+
         );
+        */
         //bottomNavigationView.setItemBackgroundResource(R.color.colorAccent);
     }
 
@@ -142,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
         dialog.show();
     }
 
+/*
 
     private void updateUI() {
 
@@ -155,6 +198,7 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
         todoAdapter.notifyDataSetChanged();
 
     }
+*/
 
 
     public void deleteTask(View view) {

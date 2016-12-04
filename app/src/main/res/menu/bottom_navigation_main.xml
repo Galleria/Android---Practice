@@ -1,19 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
     <item
         android:id="@+id/action_favorites"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:showAsAction="ifRoom"
         android:enabled="true"
-        android:icon="@drawable/ic_favorite_white_24dp"
-        android:title="@string/text_favorites" />
+        android:checked="true"
+        tools:ignore="AppCompatResource,MenuTitle" />
     <item
         android:id="@+id/action_schedules"
         android:enabled="true"
-        android:icon="@drawable/ic_access_time_white_24dp"
-        android:title="@string/text_schedules" />
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_event_black_24dp"
+        tools:ignore="AppCompatResource,MenuTitle" />
     <item
         android:id="@+id/action_music"
         android:enabled="true"
-        android:icon="@drawable/ic_audiotrack_white_24dp"
-        android:title="@string/text_music"
-        />
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_account_circle_black_24dp"
+        tools:ignore="AppCompatResource,MenuTitle" />
+
+    <item
+        android:id="@+id/action_notification"
+        android:enabled="true"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_notifications_black_24dp"
+        tools:ignore="AppCompatResource,MenuTitle" />
+
 </menu>
