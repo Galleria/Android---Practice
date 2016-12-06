@@ -25,7 +25,7 @@ import com.example.galleria.helloworld.model.TodoModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements BlankFragment.OnFragmentInteractionListener , BlankFragment2.OnFragmentInteractionListener, SocialFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements BlankFragment.OnFragmentInteractionListener , BlankFragment2.OnFragmentInteractionListener, SocialFragment.OnFragmentInteractionListener , MapMainFragment.OnFragmentInteractionListener {
 
     private static final String TAG = "MainActivity";
 
@@ -92,7 +92,8 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
 
               switch (position) {
                   case 0:
-                      ft.replace(R.id.fragment, com.google.android.gms.maps.MapFragment.newInstance() );
+                      //com.google.android.gms.maps.MapFragment.newInstance()
+                      ft.replace(R.id.fragment, MapMainFragment.newInstance() );
                       break;
                   case 1:
                       ft.replace(R.id.fragment, BlankFragment2.newInstance());
@@ -182,51 +183,6 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
                 .setNegativeButton("Cancel", null)
                 .create();
         dialog.show();
-    }
-
-/*
-
-    private void updateUI() {
-
-        todoRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        todoAdapter = new TodoAdapter(todoList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        todoRecyclerView.setLayoutManager(mLayoutManager);
-        todoRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        todoRecyclerView.setAdapter(todoAdapter);
-
-        todoAdapter.notifyDataSetChanged();
-
-    }
-*/
-
-
-    public void deleteTask(View view) {
-        View parent = (View) view.getParent();
-        TextView taskTextView = (TextView) parent.findViewById(R.id.task_title);
-        String task = String.valueOf(taskTextView.getText());
-        Log.d(TAG, "deleteTask: " + task);
-        //updateUI();
-    }
-
-    private void prepareTodoData(){
-
-        TodoModel todo = new TodoModel();
-        todo.setTopic("One one ONE");
-
-        TodoModel todo1 = new TodoModel();
-        todo1.setTopic("Two two TWO");
-
-        TodoModel todo2 = new TodoModel();
-        todo2.setTopic("THREE Three 3");
-
-        todoList.add(todo);
-        todoList.add(todo1);
-        todoList.add(todo2);
-
-        Log.d(TAG, "prepareTodoData: " + todoList.size() );
-
-        //todoAdapter.notifyDataSetChanged();
     }
 
     @Override

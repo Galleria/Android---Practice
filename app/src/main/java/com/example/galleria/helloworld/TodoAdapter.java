@@ -21,7 +21,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
 
         public ViewHolder(View view) {
             super(view);
-            title = (TextView) view.findViewById(R.id.task_title);
+            //title = (TextView) view.findViewById(R.id.task_title);
         }
     }
 

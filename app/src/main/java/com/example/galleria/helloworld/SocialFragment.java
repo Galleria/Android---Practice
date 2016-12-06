@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableListView;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
+
+import java.util.ArrayList;
 
 
 /**
@@ -31,9 +35,13 @@ public class SocialFragment extends Fragment implements ObservableScrollViewCall
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    View rootView;
+    ActionBar ab;
 
     private OnFragmentInteractionListener mListener;
 
@@ -78,23 +86,33 @@ public class SocialFragment extends Fragment implements ObservableScrollViewCall
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.social, container, false);
-        ObservableListView listView = (ObservableListView) rootView.findViewById(R.id.list);
-        listView.setScrollViewCallbacks(this);
+        rootView = inflater.inflate(R.layout.social, container, false);
 
+        //ObservableScrollView listView = (ObservableScrollView) rootView.findViewById(R.id.listView);
+        //listView.setScrollViewCallbacks(this);
+
+        ArrayList<String> listItems=new ArrayList<String>();
+        for(int i=0; i<10 ; i++ ){
+            listItems.add("Hello "+i);
+            System.out.println( "Hello "+i );
+        }
 
         ListView li = (ListView) rootView.findViewById(R.id.listView);
+        ArrayAdapter<String> adapter=new ArrayAdapter<String>(rootView.getContext(),
+                R.layout.item_todo,
+                listItems);
 
-        ViewGroup.LayoutParams lparams = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        TextView tv=new TextView(rootView.getContext());
-        tv.setLayoutParams(lparams);
-        tv.setText("test");
+        li.setAdapter( adapter );
 
-        li.addView(tv);
+        //adapter.setNotifyOnChange(true);
 
-        return inflater.inflate(R.layout.social, container, false);
+       // getActivity().getActionBar()
+        //ab = (ActionBarActivity) getActivity().getSupportActionBar();
+        System.out.println("ab : "+ ab );
+
+        return rootView;
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -106,6 +124,7 @@ public class SocialFragment extends Fragment implements ObservableScrollViewCall
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        //ab = ((ActionBarActivity)getActivity()).getSupportActionBar();
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -132,7 +151,8 @@ public class SocialFragment extends Fragment implements ObservableScrollViewCall
 
     @Override
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-        ActionBar ab = getActivity().getActionBar();
+/*
+        //System.out.println( ab );
         if (scrollState == ScrollState.UP) {
             if (ab.isShowing()) {
                 ab.hide();
@@ -142,6 +162,7 @@ public class SocialFragment extends Fragment implements ObservableScrollViewCall
                 ab.show();
             }
         }
+        */
     }
 
     /**
