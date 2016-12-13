@@ -1,11 +1,20 @@
 package com.example.galleria.helloworld;
 
 import android.app.ActionBar;
+import android.app.Activity;
+
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.support.design.widget.TabLayout;
+
+import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +28,7 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCal
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -29,19 +39,16 @@ import java.util.ArrayList;
  * Use the {@link SocialFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SocialFragment extends Fragment implements ObservableScrollViewCallbacks {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class SocialFragment extends Fragment implements SocialCreateEventTabFragment.OnFragmentInteractionListener {
 
     View rootView;
     ActionBar ab;
+
+    Context context;
+
+    private FragmentTransaction ft;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     private OnFragmentInteractionListener mListener;
 
@@ -54,65 +61,64 @@ public class SocialFragment extends Fragment implements ObservableScrollViewCall
         return fragment;
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BlankFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SocialFragment newInstance(String param1, String param2) {
-        SocialFragment fragment = new SocialFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         rootView = inflater.inflate(R.layout.social, container, false);
 
-        //ObservableScrollView listView = (ObservableScrollView) rootView.findViewById(R.id.listView);
-        //listView.setScrollViewCallbacks(this);
+        tabLayout = (TabLayout) rootView.findViewById(R.id.tabLayout);
 
-        ArrayList<String> listItems=new ArrayList<String>();
-        for(int i=0; i<10 ; i++ ){
-            listItems.add("Hello "+i);
-            System.out.println( "Hello "+i );
-        }
+        viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
 
-        ListView li = (ListView) rootView.findViewById(R.id.listView);
-        ArrayAdapter<String> adapter=new ArrayAdapter<String>(rootView.getContext(),
-                R.layout.item_todo,
-                listItems);
-
-        li.setAdapter( adapter );
-
-        //adapter.setNotifyOnChange(true);
-
-       // getActivity().getActionBar()
-        //ab = (ActionBarActivity) getActivity().getSupportActionBar();
-        System.out.println("ab : "+ ab );
+        tabLayout.setupWithViewPager(viewPager);
 
         return rootView;
     }
 
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter( getFragmentManager() );
+        adapter.addFragment( new SocialCreateEventTabFragment().newInstance(), "Create Event");
+        adapter.addFragment(new BlankFragment().newInstance(), "Join Event");
+        adapter.addFragment(new BlankFragment2().newInstance(), "Friends");
+        viewPager.setAdapter(adapter);
+    }
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -123,6 +129,7 @@ public class SocialFragment extends Fragment implements ObservableScrollViewCall
 
     @Override
     public void onAttach(Context context) {
+
         super.onAttach(context);
         //ab = ((ActionBarActivity)getActivity()).getSupportActionBar();
         if (context instanceof OnFragmentInteractionListener) {
@@ -139,30 +146,10 @@ public class SocialFragment extends Fragment implements ObservableScrollViewCall
         mListener = null;
     }
 
-    @Override
-    public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
-
-    }
 
     @Override
-    public void onDownMotionEvent() {
+    public void onFragmentInteraction(Uri uri) {
 
-    }
-
-    @Override
-    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-/*
-        //System.out.println( ab );
-        if (scrollState == ScrollState.UP) {
-            if (ab.isShowing()) {
-                ab.hide();
-            }
-        } else if (scrollState == ScrollState.DOWN) {
-            if (!ab.isShowing()) {
-                ab.show();
-            }
-        }
-        */
     }
 
     /**

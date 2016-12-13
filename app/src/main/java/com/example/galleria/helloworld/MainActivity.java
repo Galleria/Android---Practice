@@ -25,7 +25,7 @@ import com.example.galleria.helloworld.model.TodoModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements BlankFragment.OnFragmentInteractionListener , BlankFragment2.OnFragmentInteractionListener, SocialFragment.OnFragmentInteractionListener , MapMainFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements BlankFragment.OnFragmentInteractionListener ,BlankFragment2.OnFragmentInteractionListener , CalendarFragment.OnFragmentInteractionListener, SocialFragment.OnFragmentInteractionListener , MapMainFragment.OnFragmentInteractionListener,SocialCreateEventTabFragment.OnFragmentInteractionListener {
 
     private static final String TAG = "MainActivity";
 
@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         //Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
@@ -45,18 +46,20 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
         ft.add(R.id.layout_fragment_container, BlankFragment.newInstance());
         ft.commit();
 */
-        AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
-        bottomNavigation.setBehaviorTranslationEnabled(false);
-        bottomNavigation.setForceTint(false);
-        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_HIDE);
-        AHBottomNavigationAdapter navigationAdapter = new AHBottomNavigationAdapter(this, R.menu.bottom_navigation_main);
-        navigationAdapter.setupWithBottomNavigation(bottomNavigation);
+
 
         setUpBottomNavigationBar();
 
         bottomNavigation.setCurrentItem(0);
+
         //prepareTodoData();
         //updateUI();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        bottomNavigation.setCurrentItem(0);
     }
 
     @Override
@@ -78,89 +81,49 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
         }
     }
 
-    TextView textView;
     FragmentTransaction ft;
-    AHBottomNavigation bottomNavigationView;
+    AHBottomNavigation bottomNavigation;
 
     public void setUpBottomNavigationBar(){
-        bottomNavigationView = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
-          @Override
-          public boolean onTabSelected(int position, boolean wasSelected) {
-              //ft = getSupportFragmentManager().beginTransaction();
-              ft = getFragmentManager().beginTransaction();
 
-              switch (position) {
-                  case 0:
-                      //com.google.android.gms.maps.MapFragment.newInstance()
-                      ft.replace(R.id.fragment, MapMainFragment.newInstance() );
-                      break;
-                  case 1:
-                      ft.replace(R.id.fragment, BlankFragment2.newInstance());
-                      break;
-                  case 2:
-                      ft.replace(R.id.fragment, SocialFragment.newInstance());
-                      break;
-                  case 3:
-                      ft.replace(R.id.fragment, new BlankFragment());
-                      break;
-              }
-              ft.commit();
-              return true;
-          }
-        });
-/*
-        bottomNavigationView.setOnNavigationItemSelectedListener(
+        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
+        bottomNavigation.setBehaviorTranslationEnabled(false);
+        bottomNavigation.setForceTint(false);
+        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_HIDE);
+        AHBottomNavigationAdapter navigationAdapter = new AHBottomNavigationAdapter(this, R.menu.bottom_navigation_main);
+        navigationAdapter.setupWithBottomNavigation(bottomNavigation);
 
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-                        // must get fragment every time that calling menu
-                        // 1 transaction per 1 commit
-                        ft = getSupportFragmentManager().beginTransaction();
-
-
-                        switch (item.getItemId()) {
-                            case R.id.action_favorites:
-
-                                //textView.setText("Favorites Selected");
-                                ft.replace(R.id.fragment, BlankFragment.newInstance());
-
-                                break;
-                            case R.id.action_schedules:
-
-                                //textView.setText("Schedules Selected");
-                                ft.replace(R.id.fragment, BlankFragment2.newInstance());
-
-                                break;
-                            case R.id.action_music:
-
-                                //textView.setText("Music Selected");
-                                ft.replace(R.id.fragment, new BlankFragment());
-
-                                break;
-                            case R.id.action_notification:
-
-                                //textView.setText("Music Selected");
-                                ft.replace(R.id.fragment, new BlankFragment());
-
-                                break;
-                        }
-
-                        //ft.addToBackStack(null);
-                        ft.commit();
-
-                        return true;
-                    }
-                }
-
-        );
-        */
-        //bottomNavigationView.setItemBackgroundResource(R.color.colorAccent);
+        setupActionBottomBar();
     }
 
+    private void setupActionBottomBar(){
+
+        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+            @Override
+            public boolean onTabSelected(int position, boolean wasSelected) {
+                //ft = getSupportFragmentManager().beginTransaction();
+                ft = getFragmentManager().beginTransaction();
+
+                switch (position) {
+                    case 0:
+                        //com.google.android.gms.maps.MapFragment.newInstance()
+                        ft.replace(R.id.fragment, MapMainFragment.newInstance() );
+                        break;
+                    case 1:
+                        ft.replace(R.id.fragment, CalendarFragment.newInstance());
+                        break;
+                    case 2:
+                        ft.replace(R.id.fragment, SocialFragment.newInstance());
+                        break;
+                    case 3:
+                        ft.replace(R.id.fragment, new BlankFragment());
+                        break;
+                }
+                ft.commit();
+                return true;
+            }
+        });
+    }
     private void addTodoList(){
         final EditText taskEditText = new EditText(this);
         AlertDialog dialog = new AlertDialog.Builder(this)

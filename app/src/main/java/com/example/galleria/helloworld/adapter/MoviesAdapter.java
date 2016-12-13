@@ -1,4 +1,4 @@
-package com.example.galleria.helloworld;
+package com.example.galleria.helloworld.adapter;
 
 /**
  * Created by dt204842 on 11/24/2016.
@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.galleria.helloworld.R;
 import com.example.galleria.helloworld.model.Movie;
 
 import java.util.List;
