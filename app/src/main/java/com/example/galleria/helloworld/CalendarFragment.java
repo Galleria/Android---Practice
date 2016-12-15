@@ -60,6 +60,10 @@ public class CalendarFragment extends Fragment implements OnDateSelectedListener
 
         widget.setOnDateChangedListener(this);
         widget.setOnMonthChangedListener(this);
+        widget.getHeight();
+        widget.setTileHeightDp(40);
+        widget.setShowOtherDates(0);
+        //widget.setTileHeightDp(300);
 
         mapCardRecyclerView = (RecyclerView) rootView.findViewById(R.id.card_list);
 
