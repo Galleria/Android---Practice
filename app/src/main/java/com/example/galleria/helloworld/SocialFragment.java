@@ -13,7 +13,9 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 
 import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.galleria.helloworld.custom.layout.WrapContentViewPager;
 import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -41,8 +44,9 @@ public class SocialFragment extends Fragment implements SocialCreateEventTabFrag
 
     private FragmentTransaction ft;
     private TabLayout tabLayout;
-    private ViewPager viewPager;
+    private WrapContentViewPager viewPager;
 
+    private NestedScrollView nestedScrollView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -69,27 +73,31 @@ public class SocialFragment extends Fragment implements SocialCreateEventTabFrag
         rootView = inflater.inflate(R.layout.social, container, false);
 
         tabLayout = (TabLayout) rootView.findViewById(R.id.tabLayout);
+        nestedScrollView = (NestedScrollView) getActivity().findViewById(R.id.scrollbar);
 
-        viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
-        //setupViewPager(viewPager);
-
-
-        //tabLayout.setupWithViewPager(viewPager);
-        tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        viewPager = (WrapContentViewPager) rootView.findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+        viewPager.setCurrentItem(2);
 
 
-        tabLayout.getTabAt(0).select();
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setSmoothScrollingEnabled(true);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem( tab.getPosition() );
+
+                nestedScrollView = (NestedScrollView) getActivity().findViewById(R.id.scrollbar);
+                nestedScrollView.scrollTo(0, 0);
+
+                //Log.d("on selected ","on tab selected !! "+ tab.getPosition() );
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
+                //Log.d("on unselected ","on tab unselected !! "+ tab.getPosition() );
+                nestedScrollView = (NestedScrollView) getActivity().findViewById(R.id.scrollbar);
+                Log.d("get scroll Y ","Y:"+ nestedScrollView.getScrollY() );
             }
 
             @Override
@@ -98,35 +106,7 @@ public class SocialFragment extends Fragment implements SocialCreateEventTabFrag
             }
         });
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                ft = getFragmentManager().beginTransaction();
-
-                switch (position) {
-                    case 0:
-                        ft.replace(R.id.viewpager, new SocialCreateEventTabFragment().newInstance() );
-                        break;
-                    case 1:
-                        ft.replace(R.id.viewpager, new BlankFragment().newInstance() );
-                        break;
-                    case 2:
-                        ft.replace(R.id.viewpager, new BlankFragment2().newInstance() );
-                        break;
-                }
-                ft.commit();
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         //AppCompatActivity activity = ((AppCompatActivity) getActivity());
         //activity.getSupportActionBar().hide();
@@ -137,18 +117,14 @@ public class SocialFragment extends Fragment implements SocialCreateEventTabFrag
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter( getFragmentManager() );
 
-        //tabLayout.addView( new SocialCreateEventTabFragment().newInstance() , 0 );
-
         adapter.addFragment( new SocialCreateEventTabFragment().newInstance(), "Create Event");
         adapter.addFragment(new BlankFragment().newInstance(), "Join Event");
         adapter.addFragment(new BlankFragment2().newInstance(), "Friends");
 
         viewPager.setAdapter(adapter);
-
-        //viewPager.g
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
+    class ViewPagerAdapter extends FragmentStatePagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 

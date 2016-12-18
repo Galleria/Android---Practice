@@ -5,16 +5,25 @@ import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.example.galleria.helloworld.adapter.MapCardAdapter;
+import com.example.galleria.helloworld.adapter.MoviesAdapter;
+import com.example.galleria.helloworld.custom.layout.MyLinearLayoutManager;
+import com.example.galleria.helloworld.model.MapCard;
+import com.example.galleria.helloworld.model.Movie;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -53,19 +62,21 @@ public class SocialCreateEventTabFragment extends Fragment implements Observable
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.social_create_event_tab, container, false);
 
-        ArrayList<String> listItems=new ArrayList<String>();
-        for(int i=0; i<20 ; i++ ){
-            listItems.add("Hello "+i);
-            System.out.println( "Hello "+i );
+
+
+        RecyclerView movieRecyclerView = (RecyclerView) rootView.findViewById(R.id.movieList);
+
+        List<Movie> mapCardList = new ArrayList<>();
+        for(int i=0 ; i< 20 ; i++) {
+            mapCardList.add(new Movie("Happy New Mea "+i, "No:"+i, "2011"));
+            //System.out.println( "Happy New Mea "+i );
         }
 
+        MoviesAdapter mapCardAdapter = new MoviesAdapter(mapCardList);
 
-        ListView li = (ListView) rootView.findViewById(R.id.listView);
-        ArrayAdapter<String> adapter=new ArrayAdapter<String>(rootView.getContext(),
-                R.layout.item_todo,
-                listItems);
-
-        li.setAdapter( adapter );
+        movieRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        movieRecyclerView.setAdapter(mapCardAdapter);
+        movieRecyclerView.setNestedScrollingEnabled(false);
 
         return rootView;
     }

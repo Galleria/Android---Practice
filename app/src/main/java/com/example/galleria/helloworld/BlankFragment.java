@@ -4,9 +4,19 @@ import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.galleria.helloworld.adapter.MoviesAdapter;
+import com.example.galleria.helloworld.custom.layout.MyLinearLayoutManager;
+import com.example.galleria.helloworld.model.Movie;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -68,8 +78,28 @@ public class BlankFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_blank, container, false);
+
+        View rootView = inflater.inflate(R.layout.social_create_event_tab, container, false);
+
+        RecyclerView movieRecyclerView = (RecyclerView) rootView.findViewById(R.id.movieList);
+
+        List<Movie> mapCardList = new ArrayList<>();
+        for(int i=0 ; i< 20 ; i++) {
+            mapCardList.add(new Movie("Happy New Mea "+i, "No:"+i, "2011"));
+            //System.out.println( "Happy New Mea "+i );
+        }
+
+        MoviesAdapter mapCardAdapter = new MoviesAdapter(mapCardList);
+
+        movieRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        movieRecyclerView.setAdapter(mapCardAdapter);
+        movieRecyclerView.setNestedScrollingEnabled(false);
+        //movieRecyclerView.setHasFixedSize(true);
+
+        //MyLinearLayoutManager manager = new MyLinearLayoutManager( getActivity().getApplicationContext() , LinearLayoutManager.VERTICAL,false);
+        //movieRecyclerView.setLayoutManager(manager);
+
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
